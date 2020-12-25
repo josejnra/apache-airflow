@@ -7,12 +7,12 @@ x-dags-and-logs: &dags-and-logs
   - ./dags:/opt/airflow/dags
   - ./logs:/opt/airflow/logs
   - ./files:/opt/airflow/files
-  - ./tutorial-dags:/home/airflow/tutorial
-  - ./project-a:/home/airflow/project-a
+  - ./tutorials:/home/airflow/tutorials
+  - ./maintenance:/home/airflow/maintenance
 
 x-airflow-env:
   &dags-folder-env
-  - DAGS_FOLDER=/home/airflow/tutorial,/home/airflow/project-a
+  - DAGS_FOLDER=/home/airflow/tutorials,/home/airflow/maintenance
 
 
 services:

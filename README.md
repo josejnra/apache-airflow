@@ -1,4 +1,4 @@
-For this project you must have installed Docker and docker-compose. On the first run 
+For this project you must have installed Docker and docker-compose. On the first time you run the docker compose file 
 you have to uncomment the `initdb` service on [doker-compose](docker-compose.yml).
 Then, after initialized the database you should comment again this service in order to guarantee that 
 you will not initialize the database again.
