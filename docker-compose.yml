@@ -19,17 +19,6 @@ services:
     networks:
       - airflow
 
-  pgadmin:
-    image: dpage/pgadmin4:4.29
-    container_name: airflow-pgadmin
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=user@domain.com
-      - PGADMIN_DEFAULT_PASSWORD=password
-    ports:
-      - 8082:80
-    networks:
-      - airflow
-
   redis:
     image: redis:6.0.9
     container_name: airflow-redis
@@ -56,29 +45,14 @@ services:
     networks:
       - airflow
 
-  flower:
-    image: apache/airflow:2.0.0-python3.8
-    container_name: airflow-flower
-    environment:
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
-      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
-    volumes:
-      - ./logs:/opt/airflow/logs
-    ports:
-      - 5555:5555
-    depends_on:
-      - redis
-    command: celery flower
-    networks:
-      - airflow
-
   scheduler:
     image: apache/airflow:2.0.0-python3.8
     container_name: airflow-scheduler
     environment:
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
-      - AIRFLOW__WEBSERVER__BASE_URL=http://webserver:8080
       - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -95,16 +69,49 @@ services:
     environment:
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
       - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
       - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
+      - AIRFLOW__WEBSERVER__BASE_URL=http://airflow.mydomain.com:8080
+    env_file:
+      - .env
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./files:/opt/airflow/files
-    links:
-      - db:db
     depends_on:
       - db
     command: celery worker
+    networks:
+      - airflow
+
+  pgadmin:
+    image: dpage/pgadmin4:4.29
+    container_name: airflow-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+    ports:
+      - 8082:80
+    depends_on:
+      - db
+    networks:
+      - airflow
+
+  flower:
+    image: apache/airflow:2.0.0-python3.8
+    container_name: airflow-flower
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
+    volumes:
+      - ./logs:/opt/airflow/logs
+    ports:
+      - 5555:5555
+    depends_on:
+      - redis
+    command: celery flower
     networks:
       - airflow
 
