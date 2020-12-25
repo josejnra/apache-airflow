@@ -1,0 +1,134 @@
+version: "3.7"
+
+networks:
+  airflow:
+
+
+services:
+  db:
+    image: postgres:13.1
+    container_name: airflow-db
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    ports:
+      - 5432:5432
+    volumes:
+      - ./database/pg-data:/var/lib/postgresql/data
+    networks:
+      - airflow
+
+  pgadmin:
+    image: dpage/pgadmin4:4.29
+    container_name: airflow-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+    ports:
+      - 8082:80
+    networks:
+      - airflow
+
+  redis:
+    image: redis:6.0.9
+    container_name: airflow-redis
+    ports:
+      - 6379:6379
+    networks:
+      - airflow
+
+  webserver:
+    image: apache/airflow:2.0.0-python3.8
+    container_name: airflow-webserver
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./files:/opt/airflow/files
+    ports:
+      - 8080:8080
+    depends_on:
+      - db_upgrade
+    command: webserver
+    networks:
+      - airflow
+
+  flower:
+    image: apache/airflow:2.0.0-python3.8
+    container_name: airflow-flower
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+    volumes:
+      - ./logs:/opt/airflow/logs
+    ports:
+      - 5555:5555
+    depends_on:
+      - redis
+    command: celery flower
+    networks:
+      - airflow
+
+  scheduler:
+    image: apache/airflow:2.0.0-python3.8
+    container_name: airflow-scheduler
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
+      - AIRFLOW__WEBSERVER__BASE_URL=http://webserver:8080
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./files:/opt/airflow/files
+    depends_on:
+      - webserver
+    command: scheduler
+    networks:
+      - airflow
+
+  worker:
+    image: apache/airflow:2.0.0-python3.8
+    container_name: airflow-worker
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./files:/opt/airflow/files
+    links:
+      - db:db
+    depends_on:
+      - db
+    command: celery worker
+    networks:
+      - airflow
+
+  db_upgrade:
+    image: apache/airflow:2.0.0-python3.8
+    container_name: airflow-db-upgrade
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
+    depends_on:
+      - db
+      - redis
+    command: db upgrade
+    networks:
+      - airflow
+
+#  initdb:
+#    image: apache/airflow:2.0.0-python3.8
+#    container_name: airflow-initdb
+#    environment:
+#      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
+#    entrypoint: /bin/bash
+#    command: -c "airflow db init && airflow users create --firstname Jose --lastname Assis --email admin --password admin --username admin --role Admin"
+#    depends_on:
+#      - redis
+#      - db
+#    networks:
+#      - airflow
