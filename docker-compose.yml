@@ -3,6 +3,17 @@ version: "3.7"
 networks:
   airflow:
 
+x-dags-and-logs: &dags-and-logs
+  - ./dags:/opt/airflow/dags
+  - ./logs:/opt/airflow/logs
+  - ./files:/opt/airflow/files
+  - ./tutorial-dags:/home/airflow/tutorial
+  - ./project-a:/home/airflow/project-a
+
+x-airflow-env:
+  &dags-folder-env
+  - DAGS_FOLDER=/home/airflow/tutorial,/home/airflow/project-a
+
 
 services:
   db:
@@ -31,12 +42,11 @@ services:
     image: apache/airflow:2.0.0-python3.8
     container_name: airflow-webserver
     environment:
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
       - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+    env_file:
+      - .env
     volumes:
-      - ./dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./files:/opt/airflow/files
+      *dags-and-logs
     ports:
       - 8080:8080
     depends_on:
@@ -49,14 +59,11 @@ services:
     image: apache/airflow:2.0.0-python3.8
     container_name: airflow-scheduler
     environment:
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
-      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
-      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
-      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
+      *dags-folder-env
+    env_file:
+      - .env
     volumes:
-      - ./dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./files:/opt/airflow/files
+      *dags-and-logs
     depends_on:
       - webserver
     command: scheduler
@@ -67,17 +74,11 @@ services:
     image: apache/airflow:2.0.0-python3.8
     container_name: airflow-worker
     environment:
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
-      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
-      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
-      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
       - AIRFLOW__WEBSERVER__BASE_URL=http://airflow.mydomain.com:8080
     env_file:
       - .env
     volumes:
-      - ./dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./files:/opt/airflow/files
+      *dags-and-logs
     depends_on:
       - db
     command: celery worker
@@ -100,13 +101,10 @@ services:
   flower:
     image: apache/airflow:2.0.0-python3.8
     container_name: airflow-flower
-    environment:
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
-      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
-      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
-      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
+    env_file:
+      - .env
     volumes:
-      - ./logs:/opt/airflow/logs
+      *dags-and-logs
     ports:
       - 5555:5555
     depends_on:
@@ -118,8 +116,8 @@ services:
   db_upgrade:
     image: apache/airflow:2.0.0-python3.8
     container_name: airflow-db-upgrade
-    environment:
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
+    env_file:
+      - .env
     depends_on:
       - db
       - redis
@@ -130,8 +128,8 @@ services:
 #  initdb:
 #    image: apache/airflow:2.0.0-python3.8
 #    container_name: airflow-initdb
-#    environment:
-#      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://airflow:airflow@db:5432/airflow
+#    env_file:
+#      - .env
 #    entrypoint: /bin/bash
 #    command: -c "airflow db init && airflow users create --firstname Jose --lastname Assis --email admin --password admin --username admin --role Admin"
 #    depends_on:

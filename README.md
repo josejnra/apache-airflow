@@ -1,3 +1,8 @@
+For this project you must have installed Docker and docker-compose. On the first run 
+you have to uncomment the `initdb` service on [doker-compose](docker-compose.yml).
+Then, after initialized the database you should comment again this service in order to guarantee that 
+you will not initialize the database again.
+
 ## Poetry
 ### Install Poetry
 If you don't have poetry installed, just execute:
