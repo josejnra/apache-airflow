@@ -39,7 +39,7 @@ services:
       - airflow
 
   webserver:
-    image: apache/airflow:2.0.0-python3.8
+    image: apache/airflow:2.0.1-python3.8
     container_name: airflow-webserver
     environment:
       - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
@@ -56,7 +56,7 @@ services:
       - airflow
 
   scheduler:
-    image: apache/airflow:2.0.0-python3.8
+    image: apache/airflow:2.0.1-python3.8
     container_name: airflow-scheduler
     environment:
       *dags-folder-env
@@ -71,7 +71,7 @@ services:
       - airflow
 
   worker:
-    image: apache/airflow:2.0.0-python3.8
+    image: apache/airflow:2.0.1-python3.8
     container_name: airflow-worker
     environment:
       - AIRFLOW__WEBSERVER__BASE_URL=http://airflow.mydomain.com:8080
@@ -99,7 +99,7 @@ services:
       - airflow
 
   flower:
-    image: apache/airflow:2.0.0-python3.8
+    image: apache/airflow:2.0.1-python3.8
     container_name: airflow-flower
     env_file:
       - .env
@@ -114,7 +114,7 @@ services:
       - airflow
 
   db_upgrade:
-    image: apache/airflow:2.0.0-python3.8
+    image: apache/airflow:2.0.1-python3.8
     container_name: airflow-db-upgrade
     env_file:
       - .env
@@ -126,7 +126,7 @@ services:
       - airflow
 
 #  initdb:
-#    image: apache/airflow:2.0.0-python3.8
+#    image: apache/airflow:2.0.1-python3.8
 #    container_name: airflow-initdb
 #    env_file:
 #      - .env
