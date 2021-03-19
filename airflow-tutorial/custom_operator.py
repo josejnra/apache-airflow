@@ -7,13 +7,25 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from airflow import DAG
 from airflow.utils.dates import days_ago
-from airflow.models.baseoperator import BaseOperator
+from airflow.models.baseoperator import BaseOperator, BaseOperatorLink
 from airflow.utils.decorators import apply_defaults
 
 from airflow_utils import set_dag_id
 
 
+class GoogleLink(BaseOperatorLink):
+
+    name = 'Google'
+
+    def get_link(self, operator, dttm):
+        return "https://www.google.com"
+
+
 class HelloOperator(BaseOperator):
+
+    operator_extra_links = (
+        GoogleLink(),
+    )
 
     @apply_defaults
     def __init__(
@@ -25,6 +37,7 @@ class HelloOperator(BaseOperator):
 
     def execute(self, context):
         message = "Hello {}".format(self.name)
+        self.log.info(message)
         logging.info(message)
         return message
 
