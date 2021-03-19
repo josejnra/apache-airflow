@@ -6,27 +6,33 @@ networks:
 x-dags-and-logs: &dags-and-logs
   - ./dags:/opt/airflow/dags
   - ./logs:/opt/airflow/logs
-  - ./files:/opt/airflow/files
   - ./airflow-tutorial:/home/airflow/airflow-tutorial
   - ./maintenance:/home/airflow/maintenance
 
 x-airflow-env:
   &dags-folder-env
+  - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+  - AIRFLOW__WEBSERVER__BASE_URL=http://localhost
+  - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+  - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+  - AIRFLOW__CLI__ENDPOINT_URL=http://localhost
   - DAG_FOLDERS=/home/airflow/airflow-tutorial,/home/airflow/maintenance
 
-
 services:
-  db:
-    image: postgres:13.1
-    container_name: airflow-db
+
+  mysqldb:
+    image: mysql:5.7.33
+    container_name: airflow-mysql-db
+    command: --explicit_defaults_for_timestamp
     environment:
-      - POSTGRES_USER=airflow
-      - POSTGRES_PASSWORD=airflow
-      - POSTGRES_DB=airflow
+      MYSQL_ROOT_PASSWORD: "airflow"
+      MYSQL_DATABASE: "airflow"
+      MYSQL_USER: "airflow"
+      MYSQL_PASSWORD: "airflow"
     ports:
-      - 5432:5432
+      - 3307:3306
     volumes:
-      - ./database/pg-data:/var/lib/postgresql/data
+      - ./database/mysql-datadir:/var/lib/mysql
     networks:
       - airflow
 
@@ -39,16 +45,19 @@ services:
       - airflow
 
   webserver:
-    image: apache/airflow:2.0.1-python3.8
+    image: airflow:2.0.1
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: airflow-webserver
     environment:
-      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+      *dags-folder-env
     env_file:
       - .env
     volumes:
       *dags-and-logs
     ports:
-      - 8080:8080
+      - 80:8080
     depends_on:
       - db_upgrade
     command: webserver
@@ -56,7 +65,10 @@ services:
       - airflow
 
   scheduler:
-    image: apache/airflow:2.0.1-python3.8
+    image: airflow:2.0.1
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: airflow-scheduler
     environment:
       *dags-folder-env
@@ -71,36 +83,46 @@ services:
       - airflow
 
   worker:
-    image: apache/airflow:2.0.1-python3.8
+    image: airflow:2.0.1
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: airflow-worker
     environment:
-      - AIRFLOW__WEBSERVER__BASE_URL=http://airflow.mydomain.com:8080
+      *dags-folder-env
     env_file:
       - .env
     volumes:
       *dags-and-logs
     depends_on:
-      - db
+      - mysqldb
     command: celery worker
     networks:
       - airflow
 
-  pgadmin:
-    image: dpage/pgadmin4:4.29
-    container_name: airflow-pgadmin
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=user@domain.com
-      - PGADMIN_DEFAULT_PASSWORD=password
-    ports:
-      - 8082:80
+  db_upgrade:
+    image: airflow:2.0.1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: airflow-db-upgrade
+    env_file:
+      - .env
     depends_on:
-      - db
+      - mysqldb
+      - redis
+    command: db upgrade
     networks:
       - airflow
 
   flower:
-    image: apache/airflow:2.0.1-python3.8
+    image: airflow:2.0.1
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: airflow-flower
+    environment:
+      *dags-folder-env
     env_file:
       - .env
     volumes:
@@ -113,27 +135,24 @@ services:
     networks:
       - airflow
 
-  db_upgrade:
-    image: apache/airflow:2.0.1-python3.8
-    container_name: airflow-db-upgrade
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
-    command: db upgrade
-    networks:
-      - airflow
-
 #  initdb:
-#    image: apache/airflow:2.0.1-python3.8
+#    image: airflow:2.0.1
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
 #    container_name: airflow-initdb
+#    volumes:
+#      - ./wait-for-it.sh:/opt/airflow/wait-for-it.sh
 #    env_file:
 #      - .env
 #    entrypoint: /bin/bash
-#    command: -c "airflow db init && airflow users create --firstname Jose --lastname Assis --email admin --password admin --username admin --role Admin"
+#    command:
+#      - -c
+#      - |
+#        /opt/airflow/wait-for-it.sh mysqldb:3306 -- echo "mysql is up"
+#        airflow db init
+#        airflow users create --firstname Jose --lastname Nunes --email admin --password admin --username ct-admin --role Admin
 #    depends_on:
-#      - redis
-#      - db
+#      - mysqldb
 #    networks:
 #      - airflow
