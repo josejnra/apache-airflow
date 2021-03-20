@@ -151,7 +151,7 @@ services:
 #      - |
 #        /opt/airflow/wait-for-it.sh mysqldb:3306 -- echo "mysql is up"
 #        airflow db init
-#        airflow users create --firstname Jose --lastname Nunes --email admin --password admin --username ct-admin --role Admin
+#        airflow users create --firstname Jose --lastname Nunes --email admin --password admin --username admin --role Admin
 #    depends_on:
 #      - mysqldb
 #    networks:
