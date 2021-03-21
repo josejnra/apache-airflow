@@ -40,7 +40,7 @@ sudo chmod -R 777 logs
 
 Then, just setup the databases you want to use:
 ```shell
-docker-compose up pgdb mysqldb initdb
+docker-compose up mysqldb initdb
 ```
 In this case I set up two databases, just for fun. But you can only work with one based
 on what you have defined in [.env](.env) file.
