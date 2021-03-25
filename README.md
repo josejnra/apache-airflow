@@ -32,24 +32,18 @@ $ poetry install
 
 
 ## Run project locally
-First you have to change the __database__ and logs folder permission with the followings command:
+First you have to set airflow user id and group id by running:
 ```shell
-sudo chown -R 1001:0 database
-sudo chmod -R 777 logs
+echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" >> .env
 ```
 
-Then, just setup the databases you want to use:
+Then, just initialize the database to use:
 ```shell
-docker-compose up mysqldb initdb
+docker-compose up initdb
 ```
-In this case I set up two databases, just for fun. But you can only work with one based
-on what you have defined in [.env](.env) file.
+All configuration parameters are set in [.env](.env) file.
 
-The next step is to uncomment the `initdb` service on [doker-compose](docker-compose.yml).
-Thus, after initialized the database you should comment again this service in order to guarantee that 
-you will not initialize the database again or create the same user.
-
-The last comando to run all services is:
+The last command, in order to run all services is:
 ```shell
 docker-compose up -d
 ```
