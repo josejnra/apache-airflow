@@ -14,6 +14,7 @@ x-airflow-env:
   &dags-folder-env
   - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
   - AIRFLOW__WEBSERVER__BASE_URL=http://localhost
+  - AIRFLOW__WEBSERVER__DAG_DEFAULT_VIEW=graph
   - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
   - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=True
   - AIRFLOW__CORE__LOAD_EXAMPLES=False
@@ -59,7 +60,7 @@ services:
       - airflow
 
   redis:
-    image: redis:6.0.9
+    image: redis:6.2.1
     container_name: airflow-redis
     ports:
       - 6379:6379
