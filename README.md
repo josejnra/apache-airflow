@@ -47,3 +47,7 @@ The last command, in order to run all services is:
 ```shell
 docker-compose up -d
 ```
+
+### DAGs
+If you want to add DAGs, all you have to do is to mount a volume of your DAG on __x-dags-and-logs__ anchor on the [yaml file](docker-compose.yml).
+After that, just update the __DAG_FOLDERS__ environment variable on __x-airflow-env__ anchor to notify airflow where to get the new DAGs.
