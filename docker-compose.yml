@@ -23,7 +23,7 @@ x-airflow-env:
   - DAG_FOLDERS=/home/airflow/airflow-tutorial,/home/airflow/maintenance
 
 x-airflow-common: &airflow-common
-  image: airflow:2.1.0
+  image: airflow:2.1.2
   build:
     context: .
     dockerfile: Dockerfile
@@ -44,7 +44,7 @@ x-airflow-common: &airflow-common
 services:
 
   mysqldb:
-    image: mysql:5.7.33
+    image: mysql:8.0.26
     container_name: airflow-mysql-db
     command: --explicit_defaults_for_timestamp
     environment:
