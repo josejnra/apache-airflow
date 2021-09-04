@@ -62,7 +62,7 @@ services:
       - airflow
 
   redis:
-    image: redis:6.2.1
+    image: redis:6.2.5
     container_name: airflow-redis
     networks:
       - airflow
@@ -111,7 +111,7 @@ services:
         airflow users create --firstname Jose --lastname Nunes --email admin --password admin --username admin --role Admin
   
   prometheus-statsd-exporter:
-    image: prom/statsd-exporter:v0.21.0
+    image: prom/statsd-exporter:v0.22.1
     container_name: prom-statsd-exporter
     ports: 
       - 9102:9102
