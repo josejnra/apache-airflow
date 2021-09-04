@@ -18,7 +18,7 @@ x-airflow-env:
   - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
   - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=True
   - AIRFLOW__CORE__LOAD_EXAMPLES=False
-  - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+  - AIRFLOW__CELERY__BROKER_URL=redis://@redis:6379/0
   - AIRFLOW__CLI__ENDPOINT_URL=http://localhost
   - AIRFLOW__METRICS__STATSD_ON=True
   - AIRFLOW__METRICS__STATSD_HOST=prometheus-statsd-exporter
@@ -56,8 +56,6 @@ services:
       MYSQL_DATABASE: "airflow"
       MYSQL_USER: "airflow"
       MYSQL_PASSWORD: "airflow"
-    ports:
-      - 3307:3306
     volumes:
       - ./database/mysql-datadir:/var/lib/mysql
     networks:
@@ -66,8 +64,6 @@ services:
   redis:
     image: redis:6.2.1
     container_name: airflow-redis
-    ports:
-      - 6379:6379
     networks:
       - airflow
 
