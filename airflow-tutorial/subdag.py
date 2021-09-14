@@ -11,7 +11,7 @@ from airflow.utils.dates import days_ago
 from airflow_utils import set_dag_id
 
 
-def subdag(parent_dag_name, child_dag_name, args):
+def subdag_factory(parent_dag_name, child_dag_name, args):
     """
     Generate a DAG to be used as a subdag.
 
@@ -24,7 +24,6 @@ def subdag(parent_dag_name, child_dag_name, args):
     dag_subdag = DAG(
         dag_id=f'{parent_dag_name}.{child_dag_name}',
         default_args=args,
-        start_date=days_ago(2),
         schedule_interval="@daily",
     )
 
@@ -38,8 +37,13 @@ def subdag(parent_dag_name, child_dag_name, args):
     return dag_subdag
 
 
+# start date should be the same for parent dag and subdag. In order to all tasks have the same value.
+default_args = {
+    "start_date": days_ago(2)
+}
+
 with DAG(
-    dag_id=set_dag_id(__file__), start_date=days_ago(2), schedule_interval="@once", tags=['example']
+    dag_id=set_dag_id(__file__), default_args=default_args, schedule_interval="@once", tags=['example']
 ) as dag:
 
     start = DummyOperator(
@@ -49,7 +53,7 @@ with DAG(
 
     section_1 = SubDagOperator(
         task_id='section-1',
-        subdag=subdag(set_dag_id(__file__), 'section-1', {}),
+        subdag=subdag_factory(set_dag_id(__file__), 'section-1', default_args),
         dag=dag,
     )
 
@@ -60,7 +64,7 @@ with DAG(
 
     section_2 = SubDagOperator(
         task_id='section-2',
-        subdag=subdag(set_dag_id(__file__), 'section-2', {}),
+        subdag=subdag_factory(set_dag_id(__file__), 'section-2', default_args),
         dag=dag,
     )
 
