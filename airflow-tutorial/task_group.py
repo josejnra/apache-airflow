@@ -35,7 +35,7 @@ with DAG(dag_id=set_dag_id(__file__),
             previous_echo >> next_echo
             previous_echo = next_echo
 
-    with TaskGroup(group_id="tasks_group__2") as tg2:
+    with TaskGroup(group_id="tasks_group_2") as tg2:
         previous_echo = BashOperator(
            task_id="task_1",
            bash_command="echo task 1"
