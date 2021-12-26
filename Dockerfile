@@ -1,4 +1,4 @@
-FROM apache/airflow:2.2.2-python3.9
+FROM apache/airflow:2.2.3-python3.9
 
 USER root
 
