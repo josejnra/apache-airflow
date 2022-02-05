@@ -8,7 +8,6 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from airflow import DAG
 from airflow.utils.dates import days_ago
 from airflow.models.baseoperator import BaseOperator, BaseOperatorLink
-from airflow.utils.decorators import apply_defaults
 
 from airflow_utils import set_dag_id
 
@@ -27,7 +26,6 @@ class HelloOperator(BaseOperator):
         GoogleLink(),
     )
 
-    @apply_defaults
     def __init__(
             self,
             name: str,

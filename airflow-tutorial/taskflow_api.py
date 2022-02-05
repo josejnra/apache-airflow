@@ -5,7 +5,7 @@ import json
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from airflow.models.dag import dag
-from airflow.operators.python import task
+from airflow.decorators import task
 from airflow.utils.dates import days_ago
 
 from airflow_utils import set_dag_id
