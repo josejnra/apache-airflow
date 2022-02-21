@@ -14,7 +14,7 @@ from airflow.models.baseoperator import BaseOperator
 
 class TesteOperator(BaseOperator):
 
-    template_fields = ["param1"]
+    template_fields = ["param1", "param2"]
 
     def __init__(
             self,
@@ -22,11 +22,11 @@ class TesteOperator(BaseOperator):
             param2: str,
             **kwargs) -> None:
         super().__init__(**kwargs)
-        self.param1 = param1 if param1.endswith("ela") else param1 + ".adiciona"
+        self.param1 = param1
         self.param2 = param2 if param2.endswith("db") else param2 + ".adiciona"
 
     def execute(self, context):
-        message = f"Valor de PARAM1: {self.param1}"
+        message = f"Valor de PARAM1: {self.param1 if self.param1.endswith('ela') else self.param1 + '.adiciona'}"
         self.log.info(message)
         message = f"Valor de PARAM2: {self.param2}"
         self.log.info(message)
