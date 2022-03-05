@@ -1,0 +1,16 @@
+{
+  "generic_jobs": {
+    "job_1": {
+      "job_path": "/path/to/job.zip",
+      "job_module": "coleta_dados.raw"
+    },
+    "job_2": {
+      "job_path": "/path/to/job.zip",
+      "job_module": "coleta_dados.staged"
+    },
+    "job_3": {
+      "job_path": "/path/to/job.zip",
+      "job_module": "coleta_dados.curated"
+    }
+  }
+}
