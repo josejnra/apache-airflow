@@ -27,7 +27,7 @@ x-airflow-env:
   - DAG_FOLDERS=/home/airflow/airflow-tutorial,/home/airflow/maintenance
 
 x-airflow-common: &airflow-common
-  image: airflow:2.2.3
+  image: airflow:2.2.4
   build:
     context: .
     dockerfile: Dockerfile
@@ -48,7 +48,7 @@ x-airflow-common: &airflow-common
 services:
 
   mysqldb:
-    image: mysql:8.0.27
+    image: mysql:8.0.28
     container_name: airflow-mysql-db
     command: --explicit_defaults_for_timestamp
     environment:
@@ -111,7 +111,7 @@ services:
         airflow users create --firstname Jose --lastname Nunes --email admin --password admin --username admin --role Admin
   
   prometheus-statsd-exporter:
-    image: prom/statsd-exporter:v0.22.2
+    image: prom/statsd-exporter:v0.22.4
     container_name: prom-statsd-exporter
     ports: 
       - 9102:9102
