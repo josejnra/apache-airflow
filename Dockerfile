@@ -1,11 +1,5 @@
-FROM apache/airflow:2.2.5-python3.9
-
-USER root
-
-RUN chmod g+w /home/airflow
+FROM apache/airflow:2.3.0-python3.10
 
 COPY requirements.txt /requirements.txt
 
 RUN pip install -r /requirements.txt
-
-USER airflow
