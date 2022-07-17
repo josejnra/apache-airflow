@@ -7,7 +7,8 @@ x-dags-and-logs: &dags-and-logs
   - ./dags:/opt/airflow/dags
   - ./logs:/opt/airflow/logs
   - ./plugins:/opt/airflow/plugins
-  - ./airflow-tutorial:/home/airflow/airflow-tutorial
+  - ./airflow_tutorial:/home/airflow/airflow_tutorial
+  - ./great_expectations:/home/airflow/great_expectations
   - ./maintenance:/home/airflow/maintenance
 
 x-airflow-env:
@@ -24,7 +25,7 @@ x-airflow-env:
   - AIRFLOW__METRICS__STATSD_HOST=prometheus-statsd-exporter
   - AIRFLOW__METRICS__STATSD_PORT=9125
   - AIRFLOW__METRICS__STATSD_PREFIX=airflow
-  - DAG_FOLDERS=/home/airflow/airflow-tutorial,/home/airflow/maintenance
+  - DAG_FOLDERS=/home/airflow/airflow_tutorial,/home/airflow/great_expectations,/home/airflow/maintenance
 
 x-airflow-common: &airflow-common
   image: airflow:2.3.3
