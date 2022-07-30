@@ -8,7 +8,7 @@ x-dags-and-logs: &dags-and-logs
   - ./logs:/opt/airflow/logs
   - ./plugins:/opt/airflow/plugins
   - ./airflow_tutorial:/home/airflow/airflow_tutorial
-  - ./great_expectations:/home/airflow/great_expectations
+  - ./ge:/home/airflow/ge
   - ./maintenance:/home/airflow/maintenance
 
 x-airflow-env:
@@ -19,13 +19,14 @@ x-airflow-env:
   - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
   - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=True
   - AIRFLOW__CORE__LOAD_EXAMPLES=False
+  - AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True
   - AIRFLOW__CELERY__BROKER_URL=redis://@redis:6379/0
   - AIRFLOW__CLI__ENDPOINT_URL=http://localhost
   - AIRFLOW__METRICS__STATSD_ON=True
   - AIRFLOW__METRICS__STATSD_HOST=prometheus-statsd-exporter
   - AIRFLOW__METRICS__STATSD_PORT=9125
   - AIRFLOW__METRICS__STATSD_PREFIX=airflow
-  - DAG_FOLDERS=/home/airflow/airflow_tutorial,/home/airflow/great_expectations,/home/airflow/maintenance
+  - DAG_FOLDERS=/home/airflow/airflow_tutorial,/home/airflow/ge,/home/airflow/maintenance
 
 x-airflow-common: &airflow-common
   image: airflow:2.3.3
