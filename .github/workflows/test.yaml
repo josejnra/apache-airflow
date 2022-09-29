@@ -7,36 +7,67 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.8]
-        poetry-version: [ 1.1.4 ]
-        os: [ ubuntu-18.04 ]
+        python-version: [3.7]
+        os: [ ubuntu-latest ]
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      DOCKER_CACHE: /tmp/.buildx-cache/
+      DOCKER_CACHE_ARGS: --cache-from type=local, src=${DOCKER_CACHE} --cache=to type=local,mode=max,dest=${DOCKER_CACHE}
+      IMAGE_NAME: "airflow:2.4.0"
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Run Poetry Image
-        uses: abatilo/actions-poetry@v2.0.0
-        with:
-          poetry-version: ${{ matrix.poetry-version }}
+      - name: Dispaly Python version
+        run: python -c "import sys; print(sys.version)"
+        
+      - name: Install poetry
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+      
+      - name: Configure Poetry
+        run: python -m poetry config virtualenvs.in-project true
 
-      - name: Cache Dependencies
+      - name: Set up Cache
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.full-python-version.outputs.version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Ensure cache is healthy
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: python -m poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
+
+      - name: Install Dependencies
+        run: python -m poetry install
+
+      # Docker setup & caching.
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+
+      - name: Cache Docker layers
         uses: actions/cache@v2
         with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-poetry-
-      - name: Install Dependencies
+            ${{ runner.os }}-docker-
+
+      - name: Generate requirements.txt
+        run: python -m poetry export --without-hashes -o requirements.txt
+
+      - name: Build Docker image
         run: |
-          poetry install --no-root --no-dev
-      - name: Run Tests
-        run: |
-          poetry run python -m unittest discover airflow_tutorial
+          docker buildx build -t ${IMAGE_NAME} .

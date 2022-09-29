@@ -29,7 +29,7 @@ x-airflow-env:
   - DAG_FOLDERS=/home/airflow/airflow_tutorial,/home/airflow/ge,/home/airflow/maintenance
 
 x-airflow-common: &airflow-common
-  image: airflow:2.3.3
+  image: airflow:2.4.0
   build:
     context: .
     dockerfile: Dockerfile
