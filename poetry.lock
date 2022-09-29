@@ -54,7 +54,7 @@ trio = ["trio (>=0.16)"]
 
 [[package]]
 name = "apache-airflow"
-version = "2.3.3"
+version = "2.4.0"
 description = "Programmatically author, schedule and monitor data pipelines"
 category = "dev"
 optional = false
