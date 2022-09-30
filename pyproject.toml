@@ -5,7 +5,7 @@ description = ""
 authors = ["José Nunes <josenunesra@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 great-expectations = "^0.15.15"
 # airflow-provider-great-expectations = "0.1.4"
 
