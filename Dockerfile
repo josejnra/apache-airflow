@@ -1,4 +1,4 @@
-FROM apache/airflow:2.4.2-python3.9
+FROM apache/airflow:2.5.1-python3.9
 
 COPY requirements.txt /requirements.txt
 
