@@ -11,7 +11,7 @@ from airflow.utils.dates import days_ago
 from airflow_utils import set_dag_id
 
 
-def subdag_factory(parent_dag_name, child_dag_name, args):
+def subdag_factory(parent_dag_name, child_dag_name, args) -> DAG:
     """
     Generate a DAG to be used as a subdag.
 
