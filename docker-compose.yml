@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 networks:
   airflow:
@@ -29,7 +29,7 @@ x-airflow-env:
   - DAG_FOLDERS=/home/airflow/airflow_tutorial,/home/airflow/ge,/home/airflow/maintenance
 
 x-airflow-common: &airflow-common
-  image: airflow:2.6.0
+  image: airflow:2.7.0
   build:
     context: .
     dockerfile: Dockerfile
@@ -50,7 +50,7 @@ x-airflow-common: &airflow-common
 services:
 
   mysqldb:
-    image: mysql:8.0.33
+    image: mysql:8.1.0
     container_name: airflow-mysql-db
     command: --explicit_defaults_for_timestamp
     environment:
@@ -64,7 +64,7 @@ services:
       - airflow
 
   redis:
-    image: redis:7.0.11
+    image: redis:7.2.0
     container_name: airflow-redis
     networks:
       - airflow
