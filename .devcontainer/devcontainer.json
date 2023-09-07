@@ -1,0 +1,56 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+	"name": "Ubuntu",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/base:jammy",
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"nodeGypDependencies": true,
+			"version": "lts"
+		},
+		"ghcr.io/devcontainers-contrib/features/poetry:2": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"dockerDashComposeVersion": "v2"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"dsebastien.vscode-python-pack",
+				"matangover.mypy",
+				"ryanluker.vscode-coverage-gutters",
+				"emeraldwalk.RunOnSave",
+				"ms-azuretools.vscode-docker",
+				"tamasfe.even-better-toml",
+				"ms-python.pylint"
+			],
+			"settings": {
+				"terminal.integrated.scrollback": 10000,
+				"terminal.integrated.profiles.linux": {
+					"poetry-shell": {
+						"path": "poetry",
+						"args": ["shell"]
+					}
+				},
+				// "terminal.integrated.defaultProfile.linux": "poetry-shell",  # spawns a terminal on top of sh 
+				"python.defaultInterpreterPath": "/workspaces/apache-airflow/.venv/bin/python"
+			}
+		}
+	},
+
+	"runArgs": ["--name=apache-airflow-vscode"],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "sh ./.devcontainer/setup.sh",
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "vscode"
+}
