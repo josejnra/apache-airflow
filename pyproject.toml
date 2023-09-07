@@ -1,23 +1,27 @@
 [tool.poetry]
 name = "airflow"
 version = "0.1.0"
-description = ""
+description = "Airflow playground"
 authors = ["José Nunes <josenunesra@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-great-expectations = "^0.15.15"
-# airflow-provider-great-expectations = "0.1.4"
-airflow-declarative = "^1.1"
-aiohttp = "^3.8.3"
-asyncio = "^3.4.3"
-apache-airflow-providers-databricks = "^4.0.0"
-apache-airflow-providers-microsoft-azure = "^5.2.1"
-apache-airflow-providers-slack = "^7.2.0"
-apache-airflow-providers-dbt-cloud = "^3.0.0"
+python = "^3.10"
+# aiohttp = "^3.8.3"
+# asyncio = "^3.4.3"
+great-expectations = "^0.17.14"
+airflow-provider-great-expectations = "^0.2.6"
 
-[tool.poetry.dev-dependencies]
-apache-airflow = "^2.4.2"
+[tool.poetry.group.dev.dependencies]
+airflow-declarative = "^1.1"
+apache-airflow = "^2.7.0"
+mypy = "^1.5.1"
+isort = "^5.12.0"
+black = "^23.7.0"
+
+[tool.mypy]
+exclude = [
+    ".venv"
+]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

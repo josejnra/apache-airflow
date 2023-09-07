@@ -9,9 +9,9 @@ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poet
 If anything wrong happens, check the [docs](https://python-poetry.org/docs/).
 
 ### Create env
-If you have python3.7 on your machine, just run the code below to create a new env for this project.
+If you have python3.10 on your machine, just run the code below to create a new env for this project.
 ```shell script
-poetry env use python3.7
+poetry env use python3.10
 ```
 You may check the others envs by running:
 ```shell
@@ -22,6 +22,11 @@ poetry env list
 If you prefer to work the old way, with requirements.txt, you may export it with:
 ```shell
 poetry export --without-hashes -o requirements.txt
+```
+
+Export with dev dependencies:
+```shell
+poetry export --without-hashes -o requirements-dev.txt --with dev
 ```
 
 ### Install Project Dependencies
