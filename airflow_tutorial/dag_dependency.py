@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from airflow import DAG
 from airflow.sensors.external_task import ExternalTaskSensor, ExternalTaskMarker
 from airflow.operators.bash import BashOperator
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 from airflow.utils.dates import days_ago
 
 from airflow_utils import set_dag_id
@@ -14,7 +14,7 @@ from airflow_utils import set_dag_id
 
 with DAG(dag_id=set_dag_id(__file__) + '-parent', start_date=days_ago(1), schedule_interval="@daily") as parent_dag:
 
-    start = DummyOperator(task_id='start')
+    start = EmptyOperator(task_id='start')
 
     do_something = BashOperator(
         task_id='do_something',

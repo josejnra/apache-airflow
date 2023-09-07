@@ -6,13 +6,14 @@ airflow trigger_dag --conf '[curly-braces]"maxLogAgeInDays":30[curly-braces]' ai
 --conf options:
     maxLogAgeInDays:<INT> - Optional
 """
+from typing import List
 from datetime import timedelta
 import os
 import logging
 
 from airflow.models import DAG, Variable
 from airflow.operators.bash import BashOperator
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 from airflow.configuration import conf
 from airflow.utils.dates import days_ago
 
@@ -25,7 +26,7 @@ SCHEDULE_INTERVAL = "@daily"
 # Who is listed as the owner of this DAG in the Airflow Web Server
 DAG_OWNER_NAME = "operations"
 # List of email address to send email alerts to if this job fails
-ALERT_EMAIL_ADDRESSES = []
+ALERT_EMAIL_ADDRESSES: List[str] = []
 # Length to retain the log files if not already provided in the conf. If this
 # is set to 30, the job will remove those files that are 30 days old or older
 DEFAULT_MAX_LOG_AGE_IN_DAYS = Variable.get(
@@ -87,7 +88,7 @@ if hasattr(dag, 'doc_md'):
 if hasattr(dag, 'catchup'):
     dag.catchup = False
 
-start = DummyOperator(
+start = EmptyOperator(
     task_id='start',
     dag=dag)
 

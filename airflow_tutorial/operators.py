@@ -3,14 +3,14 @@ import sys
 from pprint import pprint
 import time
 
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator, PythonVirtualenvOperator
 from airflow.utils.dates import days_ago
-
 from airflow_utils import set_dag_id
+
+
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 
 def print_context(ds, **kwargs):

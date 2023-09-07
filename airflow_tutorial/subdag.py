@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from airflow import DAG
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 from airflow.operators.subdag import SubDagOperator
 from airflow.utils.dates import days_ago
 
@@ -28,7 +28,7 @@ def subdag_factory(parent_dag_name, child_dag_name, args) -> DAG:
     )
 
     for i in range(5):
-        DummyOperator(
+        EmptyOperator(
             task_id='{}-task-{}'.format(child_dag_name, i + 1),
             default_args=args,
             dag=dag_subdag,
@@ -46,7 +46,7 @@ with DAG(
     dag_id=set_dag_id(__file__), default_args=default_args, schedule_interval="@once", tags=['example']
 ) as dag:
 
-    start = DummyOperator(
+    start = EmptyOperator(
         task_id='start',
         dag=dag,
     )
@@ -57,7 +57,7 @@ with DAG(
         dag=dag,
     )
 
-    some_other_task = DummyOperator(
+    some_other_task = EmptyOperator(
         task_id='some-other-task',
         dag=dag,
     )
@@ -68,7 +68,7 @@ with DAG(
         dag=dag,
     )
 
-    end = DummyOperator(
+    end = EmptyOperator(
         task_id='end',
         dag=dag,
     )
