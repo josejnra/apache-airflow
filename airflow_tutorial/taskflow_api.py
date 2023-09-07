@@ -1,23 +1,27 @@
+import json
 import os
 import sys
-import json
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from airflow.models.dag import dag
 from airflow.decorators import task
+from airflow.models.dag import dag
 from airflow.utils.dates import days_ago
-
 from airflow_utils import set_dag_id
 
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
 default_args = {
-    'owner': 'airflow',
+    "owner": "airflow",
 }
 
 
-@dag(dag_id=set_dag_id(__file__), default_args=default_args, schedule_interval=None, start_date=days_ago(1))
+@dag(
+    dag_id=set_dag_id(__file__),
+    default_args=default_args,
+    schedule_interval=None,
+    start_date=days_ago(1),
+)
 def tutorial_taskflow_api_etl():
     """
     ### TaskFlow API Tutorial Documentation
@@ -27,6 +31,7 @@ def tutorial_taskflow_api_etl():
     located
     [here](https://airflow.apache.org/docs/stable/tutorial_taskflow_api.html)
     """
+
     @task
     def extract():
         """
