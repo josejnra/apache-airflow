@@ -42,24 +42,35 @@ x-airflow-common: &airflow-common
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     - redis
-    - mysqldb
+    - database
   networks:
     - airflow
 
 
 services:
 
-  mysqldb:
-    image: mysql:8.1.0
-    container_name: airflow-mysql-db
-    command: --explicit_defaults_for_timestamp
+  # database:
+  #   image: mysql:8.1.0
+  #   container_name: airflow-db
+  #   command: --explicit_defaults_for_timestamp
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: "airflow"
+  #     MYSQL_DATABASE: "airflow"
+  #     MYSQL_USER: "airflow"
+  #     MYSQL_PASSWORD: "airflow"
+  #   volumes:
+  #     - ./database/mysql-datadir:/var/lib/mysql
+  #   networks:
+  #     - airflow
+
+  database:
+    image: postgres:15.3
+    container_name: airflow-db
     environment:
-      MYSQL_ROOT_PASSWORD: "airflow"
-      MYSQL_DATABASE: "airflow"
-      MYSQL_USER: "airflow"
-      MYSQL_PASSWORD: "airflow"
-    volumes:
-      - ./database/mysql-datadir:/var/lib/mysql
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+      - POSTGRES_HOST_AUTH_METHOD=trust
     networks:
       - airflow
 
@@ -108,7 +119,7 @@ services:
     command:
       - -c
       - |
-        /opt/airflow/wait-for-it.sh mysqldb:3306 -- echo "mysql is up"
+        /opt/airflow/wait-for-it.sh database:5432 -- echo "database is up"
         airflow db init
         airflow users create --firstname Jose --lastname Nunes --email admin --password admin --username admin --role Admin
   
