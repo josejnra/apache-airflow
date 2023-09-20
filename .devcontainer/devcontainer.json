@@ -4,6 +4,14 @@
 	"name": "Ubuntu",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:jammy",
+
+	// binding .ssh dir into dev container for fixing issue with git
+	"mounts": [
+		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+	],
+
+	"runArgs": ["--name=vscode-apache-airflow"],
+
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
@@ -42,8 +50,6 @@
 			}
 		}
 	},
-
-	"runArgs": ["--name=apache-airflow-vscode"],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
