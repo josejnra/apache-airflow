@@ -29,7 +29,7 @@ x-airflow-env:
   - DAG_FOLDERS=/home/airflow/airflow_tutorial,/home/airflow/ge,/home/airflow/maintenance
 
 x-airflow-common: &airflow-common
-  image: airflow:2.7.1
+  image: airflow:2.7.3
   build:
     context: .
     dockerfile: Dockerfile
@@ -64,15 +64,28 @@ services:
   #     - airflow
 
   database:
-    image: postgres:16.0
+    image: postgres:16.1
     container_name: airflow-db
     environment:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
       - POSTGRES_DB=airflow
       - POSTGRES_HOST_AUTH_METHOD=trust
-    # volumes:
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
     #   - ./database/pg-data:/var/lib/postgresql/data
+    networks:
+      - airflow
+    # command: postgres -c log_min_error_statement=fatal -c wal_level=logical -c max_wal_senders=10 -c max_replication_slots=1
+
+  pgadmin:
+    image: dpage/pgadmin4:8.0
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - 8081:80
     networks:
       - airflow
 
@@ -124,7 +137,7 @@ services:
         /opt/airflow/wait-for-it.sh database:5432 -- echo "database is up"
         airflow db init
         airflow users create --firstname Jose --lastname Nunes --email admin --password admin --username admin --role Admin
-          
+
   prometheus-statsd-exporter:
     image: prom/statsd-exporter:v0.23.3
     container_name: prom-statsd-exporter

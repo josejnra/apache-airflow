@@ -28,14 +28,18 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-python.python",
-				"dsebastien.vscode-python-pack",
-				"matangover.mypy",
-				"ryanluker.vscode-coverage-gutters",
-				"emeraldwalk.RunOnSave",
 				"ms-azuretools.vscode-docker",
-				"tamasfe.even-better-toml",
-				"ms-python.pylint"
+				"ms-python.python",
+				"ms-python.autopep8",
+				"ms-python.flake8",
+				"ms-python.pylint",
+				"ms-python.vscode-pylance",
+				"ms-python.mypy-type-checker",
+				"eamodio.gitlens",
+				"waderyan.gitblame",
+				"emeraldwalk.RunOnSave",
+				"ryanluker.vscode-coverage-gutters",
+				"tamasfe.even-better-toml"
 			],
 			"settings": {
 				"terminal.integrated.scrollback": 10000,
@@ -46,7 +50,12 @@
 					}
 				},
 				// "terminal.integrated.defaultProfile.linux": "poetry-shell",  # spawns a terminal on top of sh 
-				"python.defaultInterpreterPath": "/workspaces/apache-airflow/.venv/bin/python"
+				"python.defaultInterpreterPath": "/workspaces/apache-airflow/.venv/bin/python",
+				"mypy.dmypyExecutable": "/workspaces/apache-airflow/.venv/bin/dmypy",
+				"mypy-type-checker.path": ["/workspaces/apache-airflow/.venv/bin/mypy"],
+				"python.testing.pytestPath": "/workspaces/apache-airflow/.venv/bin/pytest",
+				"flake8.interpreter": ["/workspaces/apache-airflow/.venv/bin/flake8"],
+				"flake8.path": ["/workspaces/apache-airflow/.venv/bin/flake8"]
 			}
 		}
 	},

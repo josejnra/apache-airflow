@@ -5,15 +5,13 @@ description = "Airflow playground"
 authors = ["José Nunes <josenunesra@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-# aiohttp = "^3.8.3"
-# asyncio = "^3.4.3"
-great-expectations = "^0.17.14"
-airflow-provider-great-expectations = "^0.2.6"
+python = ">=3.10,<3.12"
+great-expectations = "^0.18.3"
+airflow-provider-great-expectations = "^0.2.7"
 
 [tool.poetry.group.dev.dependencies]
 airflow-declarative = "^1.1"
-apache-airflow = "^2.7.0"
+apache-airflow = "^2.7.3"
 mypy = "^1.5.1"
 isort = "^5.12.0"
 black = "^23.7.0"
@@ -22,6 +20,13 @@ black = "^23.7.0"
 exclude = [
     ".venv"
 ]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true  # Includes a trailing comma on multi line imports that include parentheses
+line_length = 88  # max length of an import line
+extend_skip = []  # add additional files that isort should skip over
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
