@@ -8,7 +8,7 @@ x-dags-and-logs: &dags-and-logs
   - ./logs:/opt/airflow/logs
   - ./plugins:/opt/airflow/plugins
   - ./airflow_tutorial:/home/airflow/airflow_tutorial
-  - ./ge:/home/airflow/ge
+  - ./data_quality:/home/airflow/data_quality
   - ./maintenance:/home/airflow/maintenance
 
 x-airflow-env:
@@ -26,10 +26,10 @@ x-airflow-env:
   - AIRFLOW__METRICS__STATSD_HOST=prometheus-statsd-exporter
   - AIRFLOW__METRICS__STATSD_PORT=9125
   - AIRFLOW__METRICS__STATSD_PREFIX=airflow
-  - DAG_FOLDERS=/home/airflow/airflow_tutorial,/home/airflow/ge,/home/airflow/maintenance
+  - DAG_FOLDERS=/home/airflow/airflow_tutorial,/home/airflow/data_quality,/home/airflow/maintenance
 
 x-airflow-common: &airflow-common
-  image: airflow:2.7.3
+  image: airflow:2.9.0
   build:
     context: .
     dockerfile: Dockerfile
@@ -50,7 +50,7 @@ x-airflow-common: &airflow-common
 services:
 
   # database:
-  #   image: mysql:8.1.0
+  #   image: mysql:8.3.0
   #   container_name: airflow-db
   #   command: --explicit_defaults_for_timestamp
   #   environment:
@@ -74,12 +74,14 @@ services:
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d
     #   - ./database/pg-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
     networks:
       - airflow
     # command: postgres -c log_min_error_statement=fatal -c wal_level=logical -c max_wal_senders=10 -c max_replication_slots=1
 
   pgadmin:
-    image: dpage/pgadmin4:8.0
+    image: dpage/pgadmin4:8.5
     container_name: pgadmin
     environment:
       - PGADMIN_DEFAULT_EMAIL=user@domain.com
@@ -90,7 +92,7 @@ services:
       - airflow
 
   redis:
-    image: redis:7.2.1
+    image: redis:7.2.4
     container_name: airflow-redis
     networks:
       - airflow
@@ -139,7 +141,7 @@ services:
         airflow users create --firstname Jose --lastname Nunes --email admin --password admin --username admin --role Admin
 
   prometheus-statsd-exporter:
-    image: prom/statsd-exporter:v0.23.3
+    image: prom/statsd-exporter:v0.26.1
     container_name: prom-statsd-exporter
     ports: 
       - 9102:9102
