@@ -15,7 +15,7 @@ jobs:
     env:
       DOCKER_CACHE: /tmp/.buildx-cache/
       DOCKER_CACHE_ARGS: --cache-from type=local, src=${DOCKER_CACHE} --cache=to type=local,mode=max,dest=${DOCKER_CACHE}
-      IMAGE_NAME: "airflow:2.9.0"
+      IMAGE_NAME: "airflow:2.10.0"
 
     steps:
       - name: Checkout
@@ -54,7 +54,7 @@ jobs:
             ${{ runner.os }}-docker-
 
       - name: Generate requirements.txt
-        run: python -m poetry export --without-hashes -o requirements.txt
+        run: poetry export --without-hashes -o requirements.txt
 
       - name: Build Docker image
         run: |
