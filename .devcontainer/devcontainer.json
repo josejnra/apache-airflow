@@ -12,6 +12,10 @@
 
 	"runArgs": ["--name=vscode-apache-airflow"],
 
+	"remoteEnv": {
+		"PYTHONPYCACHEPREFIX": "/home/vscode/.cache/cpython/"
+	},
+
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
@@ -30,16 +34,18 @@
 			"extensions": [
 				"ms-azuretools.vscode-docker",
 				"ms-python.python",
-				"ms-python.autopep8",
-				"ms-python.flake8",
 				"ms-python.pylint",
 				"ms-python.vscode-pylance",
 				"ms-python.mypy-type-checker",
+				"ryanluker.vscode-coverage-gutters",
 				"eamodio.gitlens",
 				"waderyan.gitblame",
-				"emeraldwalk.RunOnSave",
-				"ryanluker.vscode-coverage-gutters",
-				"tamasfe.even-better-toml"
+				"tamasfe.even-better-toml",
+				"streetsidesoftware.code-spell-checker",
+				"njpwerner.autodocstring",
+				"Supermaven.supermaven",
+				"charliermarsh.ruff",
+				"phplasma.csv-to-table"
 			],
 			"settings": {
 				"terminal.integrated.scrollback": 10000,
@@ -49,19 +55,17 @@
 						"args": ["shell"]
 					}
 				},
+				"[python]": {
+					"editor.defaultFormatter": "charliermarsh.ruff",
+					"source.organizeImports": "explicit"
+				}
 				// "terminal.integrated.defaultProfile.linux": "poetry-shell",  # spawns a terminal on top of sh 
-				"python.defaultInterpreterPath": "/workspaces/apache-airflow/.venv/bin/python",
-				"mypy.dmypyExecutable": "/workspaces/apache-airflow/.venv/bin/dmypy",
-				"mypy-type-checker.path": ["/workspaces/apache-airflow/.venv/bin/mypy"],
-				"python.testing.pytestPath": "/workspaces/apache-airflow/.venv/bin/pytest",
-				"flake8.interpreter": ["/workspaces/apache-airflow/.venv/bin/flake8"],
-				"flake8.path": ["/workspaces/apache-airflow/.venv/bin/flake8"]
 			}
 		}
 	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [80, 5432, 5555, 8081, 9102],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "sh ./.devcontainer/setup.sh",

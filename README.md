@@ -11,7 +11,7 @@ If anything wrong happens, check the [docs](https://python-poetry.org/docs/).
 ### Create env
 If you have python3.10 on your machine, just run the code below to create a new env for this project.
 ```shell script
-poetry env use python3.10
+poetry env use python3.11
 ```
 You may check the others envs by running:
 ```shell

@@ -29,7 +29,7 @@ x-airflow-env:
   - DAG_FOLDERS=/home/airflow/airflow_tutorial,/home/airflow/data_quality,/home/airflow/maintenance
 
 x-airflow-common: &airflow-common
-  image: airflow:2.9.0
+  image: airflow:2.10.0
   build:
     context: .
     dockerfile: Dockerfile
@@ -64,7 +64,7 @@ services:
   #     - airflow
 
   database:
-    image: postgres:16.1
+    image: postgres:16.4
     container_name: airflow-db
     environment:
       - POSTGRES_USER=airflow
@@ -81,7 +81,7 @@ services:
     # command: postgres -c log_min_error_statement=fatal -c wal_level=logical -c max_wal_senders=10 -c max_replication_slots=1
 
   pgadmin:
-    image: dpage/pgadmin4:8.5
+    image: dpage/pgadmin4:8.10
     container_name: pgadmin
     environment:
       - PGADMIN_DEFAULT_EMAIL=user@domain.com
@@ -92,7 +92,7 @@ services:
       - airflow
 
   redis:
-    image: redis:7.2.4
+    image: redis:7.4.0
     container_name: airflow-redis
     networks:
       - airflow
@@ -141,7 +141,7 @@ services:
         airflow users create --firstname Jose --lastname Nunes --email admin --password admin --username admin --role Admin
 
   prometheus-statsd-exporter:
-    image: prom/statsd-exporter:v0.26.1
+    image: prom/statsd-exporter:v0.27.1
     container_name: prom-statsd-exporter
     ports: 
       - 9102:9102
