@@ -3,7 +3,11 @@
 {
 	"name": "Ubuntu",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/base:jammy",
+	// "image": "mcr.microsoft.com/devcontainers/base:jammy",
+
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
 
 	// binding .ssh dir into dev container for fixing issue with git
 	"mounts": [
