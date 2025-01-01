@@ -15,7 +15,7 @@ jobs:
     env:
       DOCKER_CACHE: /tmp/.buildx-cache/
       DOCKER_CACHE_ARGS: --cache-from type=local, src=${DOCKER_CACHE} --cache=to type=local,mode=max,dest=${DOCKER_CACHE}
-      IMAGE_NAME: "airflow:2.10.0"
+      IMAGE_NAME: "airflow:2.10.4"
 
     steps:
       - name: Checkout
