@@ -3,14 +3,14 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+import pendulum
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.utils.dates import days_ago
 from airflow.utils.task_group import TaskGroup
 from airflow_utils import set_dag_id
 
 with DAG(
-    dag_id=set_dag_id(__file__), start_date=days_ago(1), schedule_interval=None
+    dag_id=set_dag_id(__file__), start_date=pendulum.datetime(2025, 1, 1, tz="UTC"), schedule=None
 ) as dag:
     start = BashOperator(
         task_id="start",

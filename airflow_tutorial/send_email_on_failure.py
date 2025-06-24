@@ -3,15 +3,15 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+import pendulum
 from airflow.decorators import task
 from airflow.models import DAG
-from airflow.utils.dates import days_ago
 from airflow_utils import set_dag_id
 
 args = {
     "owner": "email-tester",
     "description": "Sending email test.",
-    "start_date": days_ago(1),
+    "start_date": pendulum.datetime(2025, 1, 1, tz="UTC"),
     "email": ["my@email.com"],
     "email_on_failure": True,
 }
@@ -27,5 +27,5 @@ def raise_exception(text: str):
     raise Exception(text)
 
 
-with DAG(dag_id=set_dag_id(__file__), default_args=args, schedule_interval=None) as dag:
+with DAG(dag_id=set_dag_id(__file__), default_args=args, schedule=None) as dag:
     raise_exception(get_some_value())

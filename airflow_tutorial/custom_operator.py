@@ -4,9 +4,9 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+import pendulum
 from airflow import DAG
 from airflow.models.baseoperator import BaseOperator, BaseOperatorLink
-from airflow.utils.dates import days_ago
 from airflow_utils import set_dag_id
 
 
@@ -32,6 +32,6 @@ class HelloOperator(BaseOperator):
 
 
 with DAG(
-    dag_id=set_dag_id(__file__), start_date=days_ago(1), schedule_interval="@daily"
+    dag_id=set_dag_id(__file__), start_date=pendulum.datetime(2025, 1, 1, tz="UTC"), schedule="@daily"
 ) as parent_dag:
     hello_task = HelloOperator(task_id="sample-task", name="foo_bar")

@@ -3,17 +3,17 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+import pendulum
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.sensors.external_task import ExternalTaskMarker, ExternalTaskSensor
-from airflow.utils.dates import days_ago
 from airflow_utils import set_dag_id
 
 with DAG(
     dag_id=set_dag_id(__file__) + "-parent",
-    start_date=days_ago(1),
-    schedule_interval="@daily",
+    start_date=pendulum.datetime(2025, 1, 1, tz="UTC"),
+    schedule="@daily",
 ) as parent_dag:
     start = EmptyOperator(task_id="start")
 
@@ -31,8 +31,8 @@ with DAG(
 
 with DAG(
     dag_id=set_dag_id(__file__) + "-child",
-    start_date=days_ago(1),
-    schedule_interval="@daily",
+    start_date=pendulum.datetime(2025, 1, 1, tz="UTC"),
+    schedule="@daily",
 ) as child_dag:
     child_task1 = ExternalTaskSensor(
         task_id="child_task1",

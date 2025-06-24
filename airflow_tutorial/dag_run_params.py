@@ -7,9 +7,9 @@ from airflow.operators.python import PythonOperator
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+import pendulum
 from airflow import DAG
 from airflow.models.baseoperator import BaseOperator
-from airflow.utils.dates import days_ago
 from airflow_utils import set_dag_id
 
 DIR_PATH = pathlib.Path(__file__).parent.absolute()
@@ -54,8 +54,8 @@ def get_json(path):
 # }
 with DAG(
     dag_id=set_dag_id(__file__),
-    schedule_interval=None,
-    start_date=days_ago(1),
+    schedule=None,
+    start_date=pendulum.datetime(2025, 1, 1, tz="UTC"),
     tags=["param"],
 ) as dag:
     PythonOperator(

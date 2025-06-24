@@ -3,10 +3,10 @@ import random
 import sys
 from typing import Any
 
+import pendulum
 from airflow.models import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
-from airflow.utils.dates import days_ago
 from airflow_utils import set_dag_id
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
@@ -17,7 +17,7 @@ def return_branch() -> Any:
     return random.choice(branches)
 
 
-with DAG(set_dag_id(__file__), schedule_interval=None, start_date=days_ago(1)) as dag:
+with DAG(set_dag_id(__file__), schedule=None, start_date=pendulum.datetime(2025, 1, 1, tz="UTC")) as dag:
     kick_off_dag = EmptyOperator(task_id="run_this_first")
 
     branching = BranchPythonOperator(

@@ -3,10 +3,10 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+import pendulum
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.subdag import SubDagOperator
-from airflow.utils.dates import days_ago
 from airflow_utils import set_dag_id
 
 
@@ -23,7 +23,7 @@ def subdag_factory(parent_dag_name, child_dag_name, args) -> DAG:
     dag_subdag = DAG(
         dag_id=f"{parent_dag_name}.{child_dag_name}",
         default_args=args,
-        schedule_interval="@daily",
+        schedule="@daily",
     )
 
     for i in range(5):
@@ -37,12 +37,12 @@ def subdag_factory(parent_dag_name, child_dag_name, args) -> DAG:
 
 
 # start date should be the same for parent dag and subdag. In order to all tasks have the same value.
-default_args = {"start_date": days_ago(2)}
+default_args = {"start_date": pendulum.datetime(2025, 1, 1, tz="UTC")}
 
 with DAG(
     dag_id=set_dag_id(__file__),
     default_args=default_args,
-    schedule_interval="@once",
+    schedule="@once",
     tags=["example"],
 ) as dag:
     start = EmptyOperator(

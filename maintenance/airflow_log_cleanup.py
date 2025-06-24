@@ -11,15 +11,15 @@ from datetime import timedelta
 import os
 import logging
 
+import pendulum
 from airflow.models import DAG, Variable
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.configuration import conf
-from airflow.utils.dates import days_ago
 
 # airflow-log-cleanup
 DAG_ID = os.path.basename(__file__).replace(".pyc", "").replace(".py", "")
-START_DATE = days_ago(1)
+START_DATE = pendulum.datetime(2025, 1, 1, tz="UTC")
 BASE_LOG_FOLDER = conf.get("logging", "base_log_folder").rstrip("/")
 # How often to Run. @daily - Once a day at Midnight
 SCHEDULE_INTERVAL = "@daily"
@@ -80,7 +80,7 @@ default_args = {
 dag = DAG(
     DAG_ID,
     default_args=default_args,
-    schedule_interval=SCHEDULE_INTERVAL,
+    schedule=SCHEDULE_INTERVAL,
     start_date=START_DATE
 )
 if hasattr(dag, 'doc_md'):

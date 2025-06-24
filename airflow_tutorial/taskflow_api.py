@@ -4,9 +4,9 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+import pendulum
 from airflow.decorators import task
 from airflow.models.dag import dag
-from airflow.utils.dates import days_ago
 from airflow_utils import set_dag_id
 
 # These args will get passed on to each operator
@@ -19,8 +19,8 @@ default_args = {
 @dag(
     dag_id=set_dag_id(__file__),
     default_args=default_args,
-    schedule_interval=None,
-    start_date=days_ago(1),
+    schedule=None,
+    start_date=pendulum.datetime(2025, 1, 1, tz="UTC"),
 )
 def tutorial_taskflow_api_etl():
     """
