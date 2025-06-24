@@ -25,6 +25,7 @@ x-airflow-env: &airflow-common-env
   AIRFLOW__CORE__LOAD_EXAMPLES: false
   AIRFLOW__CORE__ENABLE_XCOM_PICKLING: true
   AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://api-server:8080/execution/
+  AIRFLOW__API_AUTH__JWT_SECRET: S6+y9vLkSgBPM7DNYQyG0g==
   AIRFLOW__CELERY__BROKER_URL: redis://@redis:6379/0
   AIRFLOW__CLI__ENDPOINT_URL: http://localhost
   AIRFLOW__METRICS__STATSD_ON: true

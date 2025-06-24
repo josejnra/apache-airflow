@@ -5,8 +5,11 @@ from pprint import pprint
 
 import pendulum
 from airflow import DAG
-from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator, PythonVirtualenvOperator
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.python import (
+    PythonOperator,
+    PythonVirtualenvOperator,
+)
 from airflow_utils import set_dag_id
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
@@ -31,9 +34,9 @@ def callable_virtualenv():
     Importing at the module level ensures that it will not attempt to import the
     library before it is installed.
     """
-    from time import sleep
+    from time import sleep  # noqa: PLC0415
 
-    from colorama import Back, Fore, Style
+    from colorama import Back, Fore, Style  # noqa: PLC0415
 
     print(Fore.RED + "some red text")
     print(Back.GREEN + "and with a green background")

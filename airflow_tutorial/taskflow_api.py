@@ -67,7 +67,7 @@ def tutorial_taskflow_api_etl():
         instead of saving it to end user review, just prints it out.
         """
 
-        print("Total order value is: %.2f" % total_order_value)
+        print(f"Total order value is: {total_order_value:.2f}")
 
     order_data = extract()
     order_summary = transform(order_data)

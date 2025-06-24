@@ -6,16 +6,15 @@ airflow trigger_dag --conf '[curly-braces]"maxLogAgeInDays":30[curly-braces]' ai
 --conf options:
     maxLogAgeInDays:<INT> - Optional
 """
-from typing import List
-from datetime import timedelta
-import os
 import logging
+import os
+from datetime import timedelta
 
 import pendulum
-from airflow.models import DAG, Variable
-from airflow.operators.bash import BashOperator
-from airflow.operators.empty import EmptyOperator
 from airflow.configuration import conf
+from airflow.models import DAG, Variable
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
 
 # airflow-log-cleanup
 DAG_ID = os.path.basename(__file__).replace(".pyc", "").replace(".py", "")
@@ -26,7 +25,7 @@ SCHEDULE_INTERVAL = "@daily"
 # Who is listed as the owner of this DAG in the Airflow Web Server
 DAG_OWNER_NAME = "operations"
 # List of email address to send email alerts to if this job fails
-ALERT_EMAIL_ADDRESSES: List[str] = []
+ALERT_EMAIL_ADDRESSES: list[str] = []
 # Length to retain the log files if not already provided in the conf. If this
 # is set to 30, the job will remove those files that are 30 days old or older
 DEFAULT_MAX_LOG_AGE_IN_DAYS = Variable.get(
@@ -216,7 +215,7 @@ for log_cleanup_id in range(1, NUMBER_OF_WORKERS + 1):
             bash_command=log_cleanup,
             params={
                 "directory": str(directory),
-                "sleep_time": int(log_cleanup_id)*3},
+                "sleep_time": int(log_cleanup_id) * 3},
             dag=dag)
 
         log_cleanup_op.set_upstream(start)

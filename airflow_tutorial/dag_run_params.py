@@ -41,7 +41,7 @@ def run_job(ds, job, initial_date, end_date):
 
 
 def get_json(path):
-    with open(path) as file:
+    with open(path, encoding="utf-8") as file:
         config = json.load(file)
 
     return config
